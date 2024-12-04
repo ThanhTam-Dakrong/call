@@ -5,34 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Call User</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header label, .header input, .header button {
+            margin-right: 10px;
+        }
+        .header input {
+            padding: 5px;
+            font-size: 14px;
+            width: 300px;
+        }
+        .header button {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #0056b3;
+            color: #0056b3;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .header button:hover {
+            background: #0056b3;
+            color: white;
+        }
         iframe {
             width: 100%;
-            height: 100vh;
+            height: calc(100vh - 50px);
             border: none;
         }
     </style>
 </head>
 <body>
-    <h1>Chào mừng Người tham gia</h1>
-    
-    <!-- Nút để tham gia cuộc gọi -->
-    <button onclick="joinMeeting()">Tham gia cuộc gọi</button>
-
-    <div id="meetingContainer" style="display:none;">
-        <!-- Iframe sẽ được nhúng ở đây -->
-        <iframe id="bigbluebuttonIframe" src="" allow="camera; microphone; fullscreen" ></iframe>
+    <div class="header">
+        <label for="roomUrl">Nhập URL phòng họp:</label>
+        <input type="text" id="roomUrl" placeholder="https://your-bigbluebutton-server.com/...">
+        <button onclick="joinMeeting()">Kết nối</button>
     </div>
+
+    <iframe id="bigbluebuttonIframe" src="" allow="camera; microphone; fullscreen"></iframe>
 
     <script>
         function joinMeeting() {
-            const meetingID = '12345'; // meetingID của phòng BigBlueButton
-            const attendeePassword = 'ap'; // Mật khẩu của người tham gia
+            // Lấy URL từ ô nhập liệu
+            const roomUrl = document.getElementById('roomUrl').value;
 
-            const url = 'https://demo.bigbluebutton.org/rooms/gk7-inc-uha-rfv';
+            if (!roomUrl) {
+                alert('Vui lòng nhập URL phòng họp!');
+                return;
+            }
 
-            // Hiển thị iframe và thay đổi URL cho phòng
-            document.getElementById('bigbluebuttonIframe').src = url;
-            document.getElementById('meetingContainer').style.display = 'block';
+            // Kiểm tra định dạng URL (tùy chọn)
+            if (!roomUrl.startsWith('https://')) {
+                alert('URL không hợp lệ! URL phải bắt đầu bằng "https://".');
+                return;
+            }
+
+            // Tải URL vào iframe
+            document.getElementById('bigbluebuttonIframe').src = roomUrl;
         }
     </script>
 </body>
