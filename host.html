@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call Host</title>
+    <style>
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chào mừng Host</h1>
+    
+    <!-- Nút để bắt đầu cuộc gọi -->
+    <button onclick="startMeeting()">Bắt đầu cuộc gọi</button>
+
+    <div id="meetingContainer" style="display:none;">
+        <!-- Iframe sẽ được nhúng ở đây -->
+        <iframe id="bigbluebuttonIframe" src="" allow="camera; microphone; fullscreen" ></iframe>
+    </div>
+
+    <script>
+        function startMeeting() {
+            const meetingID = '12345'; // meetingID của phòng BigBlueButton
+            const moderatorPassword = 'mp'; // Mật khẩu của người tổ chức
+            const attendeePassword = 'ap'; // Mật khẩu của người tham gia
+
+            const url = `https://your-bigbluebutton-server.com/bigbluebutton/api/join?meetingID=${meetingID}&fullName=Host&password=${moderatorPassword}&redirect=true`;
+
+            // Hiển thị iframe và thay đổi URL cho phòng
+            document.getElementById('bigbluebuttonIframe').src = url;
+            document.getElementById('meetingContainer').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
