@@ -10,30 +10,36 @@
             height: 100vh;
             border: none;
         }
+        #meetingContainer {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Chào mừng Host</h1>
     
     <!-- Nút để bắt đầu cuộc gọi -->
-    <button onclick="startMeeting()">Bắt đầu cuộc gọi</button>
+    <button id="start-call-btn" onclick="startMeeting()">Bắt đầu cuộc gọi</button>
 
-    <div id="meetingContainer" style="display:none;">
+    <div id="meetingContainer">
         <!-- Iframe sẽ được nhúng ở đây -->
-        <iframe id="bigbluebuttonIframe" src="" allow="camera; microphone; fullscreen" ></iframe>
+        <iframe id="bigbluebuttonIframe" allow="camera; microphone; fullscreen"></iframe>
     </div>
 
     <script>
         function startMeeting() {
-            const meetingID = '12345'; // meetingID của phòng BigBlueButton
-            const moderatorPassword = 'mp'; // Mật khẩu của người tổ chức
-            const attendeePassword = 'ap'; // Mật khẩu của người tham gia
+            const roomName = 'room-' + Math.floor(Math.random() * 10000); // Tạo tên phòng ngẫu nhiên
+            const meetingURL = 'https://demo.bigbluebutton.org/rooms/gk7-inc-uha-rfv/join/${roomName}'; // Đường dẫn phòng họp trên BigBlueButton
 
-            const url = 'https://demo.bigbluebutton.org/rooms/gk7-inc-uha-rfv';
+            // Cập nhật URL cho iframe
+            const iframe = document.getElementById('bigbluebuttonIframe');
+            iframe.src = meetingURL;
 
-            // Hiển thị iframe và thay đổi URL cho phòng
-            document.getElementById('bigbluebuttonIframe').src = url;
+            // Hiển thị iframe
             document.getElementById('meetingContainer').style.display = 'block';
+
+            // Ẩn nút bắt đầu
+            document.getElementById('start-call-btn').style.display = 'none';
         }
     </script>
 </body>
