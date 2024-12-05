@@ -213,7 +213,15 @@
         // Host Call
         startCallButton.onclick = async () => {
             const username = usernameInput.value.trim() || "Host";
-            peer = new Peer();
+            peer = new Peer({
+                config: {
+                    iceServers: [
+                        {
+                            urls: 'stun:stun.l.google.com:19302'  // Thêm STUN server Google
+                        }
+                    ]
+                }
+            });
 
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             createVideoElement(localStream, peer.id, username, peer.id);
@@ -255,39 +263,42 @@
         };
 
         // Join Call
-        joinCallButton.onclick = async () => {
+        joinCallButton.onclick = () => {
             const roomId = roomIdInput.value.trim();
-            const username = usernameInput.value.trim() || "User";
+            const username = usernameInput.value.trim() || "Guest";
+
             if (!roomId) {
-                alert("Please enter a Room ID!");
+                alert("Please enter a Room ID.");
                 return;
             }
 
-            peer = new Peer();
-            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            createVideoElement(localStream, peer.id, username, roomId);
+            peer = new Peer({
+                config: {
+                    iceServers: [
+                        {
+                            urls: 'stun:stun.l.google.com:19302'  // Thêm STUN server Google
+                        }
+                    ]
+                }
+            });
 
-            peer.on("open", () => {
-                const call = peer.call(roomId, localStream, { metadata: { name: username } });
-                peers[roomId] = call;
-
-                call.on("stream", (remoteStream) => {
-                    const remoteName = "Host";
-                    createVideoElement(remoteStream, roomId, remoteName, roomId);
-                });
-
-                call.on("close", () => {
-                    removeVideoElement(roomId);
-                    delete peers[roomId];
+            peer.on("open", (id) => {
+                const conn = peer.connect(roomId);
+                conn.on("open", () => {
+                    conn.send({ name: username });
+                    conn.on("data", (data) => console.log("Received:", data));
                 });
             });
 
             peer.on("call", (call) => {
+                if (peers[call.peer]) return; // Tránh lặp
+
                 call.answer(localStream);
                 peers[call.peer] = call;
 
                 call.on("stream", (remoteStream) => {
-                    createVideoElement(remoteStream, call.peer, "User", roomId);
+                    const remoteName = call.metadata?.name || "User";
+                    createVideoElement(remoteStream, call.peer, remoteName, peer.id);
                 });
 
                 call.on("close", () => {
