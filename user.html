@@ -248,13 +248,6 @@
                 });
             });
 
-            peer.on("connection", (conn) => {
-                conn.on("close", () => {
-                    removeVideoElement(conn.peer);
-                    delete peers[conn.peer];
-                });
-            });
-
             // Ẩn các ô nhập liệu và nút gọi
             usernameInput.style.display = "none";
             roomIdInput.style.display = "none";
