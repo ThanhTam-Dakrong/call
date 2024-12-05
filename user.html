@@ -232,25 +232,13 @@
             });
 
             peer.on("call", (call) => {
-                if (peers[call.peer]) return; // Tránh lặp
-
-                call.answer(localStream);
-                peers[call.peer] = call;
-
+                call.answer(localStream); // Trả lời cuộc gọi
                 call.on("stream", (remoteStream) => {
                     const remoteName = call.metadata?.name || "User";
                     createVideoElement(remoteStream, call.peer, remoteName, peer.id);
                 });
-
-                call.on("close", () => {
-                    removeVideoElement(call.peer);
-                    delete peers[call.peer];
-                });
             });
 
-            // Ẩn các ô nhập liệu và nút gọi
-            usernameInput.style.display = "none";
-            roomIdInput.style.display = "none";
             startCallButton.style.display = "none";
             joinCallButton.style.display = "none";
         };
@@ -284,11 +272,7 @@
             });
 
             peer.on("call", (call) => {
-                if (peers[call.peer]) return; // Tránh lặp
-
                 call.answer(localStream);
-                peers[call.peer] = call;
-
                 call.on("stream", (remoteStream) => {
                     const remoteName = call.metadata?.name || "User";
                     createVideoElement(remoteStream, call.peer, remoteName, peer.id);
@@ -300,11 +284,8 @@
                 });
             });
 
-            // Ẩn các ô nhập liệu và nút gọi
-            usernameInput.style.display = "none";
-            roomIdInput.style.display = "none";
-            startCallButton.style.display = "none";
             joinCallButton.style.display = "none";
+            startCallButton.style.display = "none";
         };
     </script>
 </body>
